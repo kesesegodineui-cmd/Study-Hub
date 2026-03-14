@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StudyHub – Home</title>
+  <link rel="manifest" href="/manifest.json">
+
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; font-family:'Poppins', sans-serif; }
+    body { background: linear-gradient(135deg,#07172b,#1a1f3d); color:white; min-height:100vh; }
+    .wrapper { width:100%; max-width:1200px; margin:0 auto; padding:20px; }
+
+    /* Navbar */
+    .navbar { display:flex; justify-content:center; align-items:center; padding:15px 0; }
+    .logo { font-size:1.8rem; font-weight:bold; color:#baaf34; }
+
+    /* Hero Section */
+    .hero { display:flex; justify-content:center; align-items:center; height:60vh; }
+    .menu-container { display:flex; flex-direction:column; gap:15px; }
+    .menu-container button { 
+      text-align:center; 
+      padding:15px 25px; 
+      border-radius:6px; 
+      font-weight:bold; 
+      transition:0.3s; 
+      border:none; 
+      cursor:pointer;
+      background:#baaf34; 
+      color:#07172b;
+    }
+    .menu-container button:hover { background:#d4c852; }
+
+    /* Task & Notes Section */
+    .tasks, .notes {
+      margin-top:20px;
+      background:#222a45;
+      padding:15px;
+      border-radius:8px;
+    }
+    .tasks h2, .notes h2 { color:#baaf34; margin-bottom:10px; }
+    ul { list-style:none; padding-left:0; }
+    li { margin:5px 0; display:flex; justify-content:space-between; align-items:center; }
+    input, textarea {
+      width:100%; padding:8px; margin:8px 0; border-radius:6px; border:none;
+    }
+    .add-btn, .remove-btn {
+      background:#baaf34; color:#07172b; padding:6px 12px; border:none; border-radius:6px; cursor:pointer;
+      margin-left:10px;
+    }
+    .add-btn:hover, .remove-btn:hover { background:#d4c852; }
+  </style>
+
+  <script>
+    // Register Service Worker
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/service-worker.js')
+          .then(reg => console.log('Service Worker registered:', reg.scope))
+          .catch(err => console.error('SW registration failed:', err));
+      });
+    }
+
+    // Daily Tasks functionality
+    function addTask() {
+      const taskInput = document.getElementById("taskInput");
+      const taskList = document.getElementById("taskList");
+      if (taskInput.value.trim() !== "") {
+        const li = document.createElement("li");
+        li.textContent = taskInput.value;
+
+        // Add remove button
+        const removeBtn = document.createElement("button");
+        removeBtn.textContent = "Remove";
+        removeBtn.className = "remove-btn";
+        removeBtn.onclick = () => li.remove();
+
+        li.appendChild(removeBtn);
+        taskList.appendChild(li);
+        taskInput.value = "";
+      }
+    }
+
+    // Notes functionality
+    function addNote() {
+      const noteInput = document.getElementById("noteInput");
+      const noteList = document.getElementById("noteList");
+      if (noteInput.value.trim() !== "") {
+        const li = document.createElement("li");
+        li.textContent = noteInput.value;
+
+        // Add remove button
+        const removeBtn = document.createElement("button");
+        removeBtn.textContent = "Remove";
+        removeBtn.className = "remove-btn";
+        removeBtn.onclick = () => li.remove();
+
+        li.appendChild(removeBtn);
+        noteList.appendChild(li);
+        noteInput.value = "";
+      }
+    }
+  </script>
+</head>
+<body>
+
+  <div class="wrapper">
+
+    <!-- HEADER -->
+    <header class="navbar">
+      <div class="logo">StudyHub</div>
+    </header>
+
+    <!-- CENTER MENU -->
+    <section class="hero">
+      <div class="menu-container">
+        <button onclick="document.getElementById('tasksSection').style.display='block'">Daily Tasks</button>
+      </div>
+    </section>
+
+    <!-- DAILY TASKS SECTION -->
+    <div id="tasksSection" class="tasks" style="display:none;">
+      <h2>Daily Tasks</h2>
+      <input type="text" id="taskInput" placeholder="Enter a new task">
+      <button class="add-btn" onclick="addTask()">Add Task</button>
+      <ul id="taskList"></ul>
+
+      <!-- NOTES SECTION -->
+      <div class="notes">
+        <h2>Notes</h2>
+        <textarea id="noteInput" placeholder="Write a note..."></textarea>
+        <button class="add-btn" onclick="addNote()">Add Note</button>
+        <ul id="noteList"></ul>
+      </div>
+    </div>
+
+  </div>
+
+</body>
+</html>
